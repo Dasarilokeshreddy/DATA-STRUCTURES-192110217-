@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+void push(struct Node** head, int newData) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = newData;
+    newNode->next = (*head);
+    (*head) = newNode;
+}
+
+void insertAfter(struct Node* prevNode, int newData) {
+    if (prevNode == NULL) {
+        printf("The given previous node cannot be NULL");
+        return;
+    }
+
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = newData;
+    newNode->next = prevNode->next;
+    prevNode->next = newNode;
+}
+
+void append(struct Node** head, int newData) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    struct Node* last = *head;
+    newNode->data = newData;
+    newNode->next = NULL;
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    while (last->next != NULL) {
+        last = last->next;
+    }
+    last->next = newNode;
+}
+
+void insertAtPosition(struct Node** head, int data, int position) {
+    if (*head == NULL) {
+        push(head, data);
+        return;
+    }
+    struct Node* temp = *head;
+    int i;
+    for (i = 0; temp != NULL && i < position-1; i++) {
+        temp = temp->next;
+    }
+    if (temp == NULL || i != position-1) {
+        printf("The given position is more than the number of nodes in the list");
+        return;
+    }
+    insertAfter(temp, data);
+}
+
+void printList(struct Node* node) {
+    while (node != NULL) {
+        printf("%d ", node->data);
+        node = node->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    struct Node* head = NULL;
+
+    append(&head, 1);
+    push(&head, 16);
+    push(&head, 3);
+    append(&head, 7);
+    insertAfter(head->next, 13);
+
+    printf("Created Linked List: ");
+    printList(head);
+
+    int data, position;
+    printf("Enter the data to be inserted: ");
+    scanf("%d", &data);
+    printf("Enter the position: ");
+    scanf("%d", &position);
+    insertAtPosition(&head, data, position);
+    printf("Linked List after inserting %d at position %d: ", data, position);
+    printList(head);
+
+    return 0;
+}
